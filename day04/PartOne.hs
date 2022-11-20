@@ -1,5 +1,7 @@
 module PartOne
     ( findBingoGameWinnerResult
+    , findWinningBoardUnmarkedNumbersSum
+    , checkIfMatrixWins
     ) where
 
 import           Data.List                      ( concat
@@ -9,36 +11,10 @@ import           Data.List                      ( concat
 import qualified Data.Set                      as Set
 
 
-getTableRowsAndColumns :: [[Int]] -> [[Int]]
-getTableRowsAndColumns table =
-    let rows    = table
-        columns = transpose table
-    in  rows ++ columns
-
-checkIfMatrixWins :: Set.Set Int -> [[Int]] -> Bool
-checkIfMatrixWins bingoNumbers matrix =
-    let rowsAndCols = getTableRowsAndColumns matrix in any rowOrColWins matrix
-  where
-    rowOrColWins rowOrCol = Set.fromList rowOrCol `Set.isSubsetOf` bingoNumbers
-
-findWinningBoardUnmarkedNumbersSum :: [[Int]] -> Set.Set Int -> Int
-findWinningBoardUnmarkedNumbersSum matrix bingoNumbers =
-    let allMatrixNumbers = concat matrix
-        unmarkedNumbers =
-            Set.difference (Set.fromList allMatrixNumbers) bingoNumbers
-    in  sum unmarkedNumbers
-
-scanAllBoardsForAWinner matrixes bingoNumbers freshNumber =
-    let maybeWinnerTable = find (checkIfMatrixWins bingoNumbers) matrixes
-    in  case maybeWinnerTable of
-            Just winnerTable -> Just $ finalResult winnerTable
-            Nothing          -> Nothing
-  where
-    finalResult winnerTable =
-        findWinningBoardUnmarkedNumbersSum winnerTable bingoNumbers
-            * freshNumber
-
-
+findBingoGameWinnerResult :: Foldable t => [Int] -> t [[Int]] -> Maybe Int
+findBingoGameWinnerResult bingoNumbersInput matrixes =
+    let initialSet = Set.empty
+    in  findNumberThatWinsBingoGame bingoNumbersInput initialSet matrixes
 
 
 findNumberThatWinsBingoGame
@@ -52,7 +28,39 @@ findNumberThatWinsBingoGame (freshNumber : futureInput) previousNumbers matrixes
     where updatedBingoNumbers = Set.insert freshNumber previousNumbers
 
 
-findBingoGameWinnerResult :: Foldable t => [Int] -> t [[Int]] -> Maybe Int
-findBingoGameWinnerResult bingoNumbersInput matrixes =
-    let initialSet = Set.empty
-    in  findNumberThatWinsBingoGame bingoNumbersInput initialSet matrixes
+
+scanAllBoardsForAWinner matrixes bingoNumbers freshNumber =
+    let maybeWinnerTable = find (checkIfMatrixWins bingoNumbers) matrixes
+    in  case maybeWinnerTable of
+            Just winnerTable -> Just $ finalResult winnerTable
+            Nothing          -> Nothing
+  where
+    finalResult winnerTable =
+        findWinningBoardUnmarkedNumbersSum winnerTable bingoNumbers
+            * freshNumber
+
+findWinningBoardUnmarkedNumbersSum :: [[Int]] -> Set.Set Int -> Int
+findWinningBoardUnmarkedNumbersSum matrix bingoNumbers =
+    let allMatrixNumbers = concat matrix
+        unmarkedNumbers =
+            Set.difference (Set.fromList allMatrixNumbers) bingoNumbers
+    in  sum unmarkedNumbers
+
+
+checkIfMatrixWins :: Set.Set Int -> [[Int]] -> Bool
+checkIfMatrixWins bingoNumbers matrix =
+    let rowsAndCols = getTableRowsAndColumns matrix
+    in  any rowOrColWins rowsAndCols
+  where
+    rowOrColWins rowOrCol = Set.fromList rowOrCol `Set.isSubsetOf` bingoNumbers
+    getTableRowsAndColumns table = table ++ transpose table
+
+
+findWhyItWins bingoNumbers matrix =
+    let rowsAndCols = getTableRowsAndColumns matrix
+    in  find rowOrColWins rowsAndCols
+  where
+    rowOrColWins rowOrCol = Set.fromList rowOrCol `Set.isSubsetOf` bingoNumbers
+    getTableRowsAndColumns table = table ++ transpose table
+
+
