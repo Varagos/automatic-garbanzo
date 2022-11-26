@@ -3,6 +3,7 @@
 module Lib
     ( wordsWhen
     , LanternFish(..)
+    , LanternFishSchool(..)
     , findLanternFishAfterDays
     ) where
 

@@ -2,6 +2,7 @@ import           Lib                            ( LanternFish(..)
                                                 , findLanternFishAfterDays
                                                 , wordsWhen
                                                 )
+import           PartTwo                        ( fishCountAfterDays )
 
 
 main = do
@@ -10,3 +11,6 @@ main = do
     let initFishSchool = map LanternFish initIntState
     let partOne        = length $ findLanternFishAfterDays initFishSchool 80
     print partOne
+
+    let partTwo = fishCountAfterDays initIntState 256
+    print partTwo
