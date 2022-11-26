@@ -2,7 +2,7 @@
 
 ```bash
 # Compile the program
-ghc Main.hs
+ghc --make Main.hs
 
 # Run program
 ./Main
