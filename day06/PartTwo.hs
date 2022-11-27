@@ -2,7 +2,6 @@ module PartTwo
     ( fishCountAfterDays
     ) where
 import qualified Data.Map                      as Map
-import qualified Data.Maybe
 
 
 type LanternFishHistogram = Map.Map Int Int

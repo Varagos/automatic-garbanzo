@@ -1,6 +1,8 @@
-import           Lib                            ( findLeastPossibleFuelPosition
+import           Lib                            ( findImprovedLeastPossibleFuelPosition
+                                                , findLeastPossibleFuelPosition
                                                 , wordsWhen
                                                 )
+
 
 
 main = do
@@ -8,4 +10,6 @@ main = do
     let horizontalPositions = map read $ wordsWhen (== ',') input :: [Int]
     -- Part One
     print $ findLeastPossibleFuelPosition horizontalPositions
+
+    print $ findImprovedLeastPossibleFuelPosition horizontalPositions
 
